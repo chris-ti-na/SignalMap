@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="3345444164">
+    <data-source source="LOCAL" name="PostgreSQL - signalmap@localhost" uuid="03931123-46be-4fe8-90cd-7eaa947c0d33">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5432/signalmap</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

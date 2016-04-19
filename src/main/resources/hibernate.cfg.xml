@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+      <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL82Dialect</property>
+      <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+      <property name="hibernate.connection.username">christina</property>
+      <property name="hibernate.connection.password">solo</property>
+      <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/signalmap</property>
+
+
+      <property name="connection_pool_size">1</property>
+
+      <property name="hbm2ddl.auto">create</property>
+
+      <property name="show_sql">true</property>
+
+      <mapping class="persistence.entity.AsuLevel"/>
+      <mapping class="persistence.entity.BarLevel"/>
+      <mapping class="persistence.entity.DbmLevel"/>
+      <mapping class="persistence.entity.Location"/>
+      <mapping class="persistence.entity.Signal"/>
+      <mapping class="persistence.entity.SignalLocation"/>
+  </session-factory>
+</hibernate-configuration>
