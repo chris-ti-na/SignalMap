@@ -6,8 +6,7 @@ import org.hibernate.Transaction;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import persistence.dao.EntityDAO;
-import persistence.dao.GenericDAOImpl;
+import persistence.dao.*;
 import persistence.entity.*;
 
 import javax.enterprise.context.Dependent;
@@ -19,41 +18,44 @@ import java.util.Locale;
 public class EntityService implements Serializable {
 
     private SessionFactory sessionFactory;
-    private EntityDAO asuLevelDAO;
-    private EntityDAO dbmLevelDAO;
-    private EntityDAO barLevelDAO;
-    private EntityDAO locationDAO;
     private EntityDAO signalDAO;
-    private EntityDAO signalLocationDAO;
+    private DeviceInfoDAOImpl deviceInfoDAO;
+    private CellInfoDAOImpl cellInfoDAO;
+    private ProviderDAOImpl providerDAO;
     private Session currentSession;
 
     public EntityService(){
         Locale.setDefault(Locale.ENGLISH);
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure("hibernate/hibernate.cfg.xml").build();
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         currentSession = sessionFactory.openSession();
-        asuLevelDAO = getEntityDAO(AsuLevel.class, currentSession);
-        dbmLevelDAO = getEntityDAO(DbmLevel.class, currentSession);
-        barLevelDAO = getEntityDAO(BarLevel.class, currentSession);
-        locationDAO = getEntityDAO(Location.class, currentSession);
         signalDAO = getEntityDAO(Signal.class, currentSession);
-        signalLocationDAO = getEntityDAO(SignalLocation.class, currentSession);
+        deviceInfoDAO = (DeviceInfoDAOImpl)getEntityDAO(DeviceInfo.class, currentSession);
+        cellInfoDAO = (CellInfoDAOImpl)getEntityDAO(CellInfo.class, currentSession);
+        providerDAO = (ProviderDAOImpl)getEntityDAO(Provider.class, currentSession);
     }
 
     private EntityDAO getEntityDAO(Class clazz, Session session){
+        if(CellInfo.class.equals(clazz)){
+            return new CellInfoDAOImpl(session);
+        }
+        if(DeviceInfo.class.equals(clazz)){
+            return new DeviceInfoDAOImpl(session);
+        }
+        if(Provider.class.equals(clazz)){
+            return new ProviderDAOImpl(session);
+        }
         return new GenericDAOImpl(clazz, session);
     }
 
-    public void addSignalLocation(SignalLocation signalLocation){
+    public void addSignal(Signal signal){
         Transaction tx = null;
         try {
             tx = currentSession.beginTransaction();
-            asuLevelDAO.create(signalLocation.getSignal().getAsuLevel());
-            dbmLevelDAO.create(signalLocation.getSignal().getDbmLevel());
-            barLevelDAO.create(signalLocation.getSignal().getBarLevel());
-            locationDAO.create(signalLocation.getLocation());
-            signalDAO.create(signalLocation.getSignal());
-            signalLocationDAO.create(signalLocation);
+            signalDAO.create(signal);
+            deviceInfoDAO.create(signal.getDeviceInfo());
+            cellInfoDAO.create(signal.getCellInfo());
+            providerDAO.create(signal.getProvider());
             tx.commit();
         }catch (RuntimeException ex){
             if(tx != null) {
@@ -63,11 +65,11 @@ public class EntityService implements Serializable {
         }
     }
 
-    public void deleteSignalLocation(int id){
+    public void deleteSignal(int id){
         Transaction tx = null;
         try {
             tx = currentSession.beginTransaction();
-            signalLocationDAO.delete(id);
+            signalDAO.delete(id);
             tx.commit();
         }catch (RuntimeException ex){
             if(tx != null) {
@@ -77,16 +79,14 @@ public class EntityService implements Serializable {
         }
     }
 
-    public void editSignalLocation(SignalLocation signalLocation){
+    public void editSignal(Signal signal){
         Transaction tx = null;
         try {
             tx = currentSession.beginTransaction();
-            asuLevelDAO.update(signalLocation.getSignal().getAsuLevel());
-            dbmLevelDAO.update(signalLocation.getSignal().getDbmLevel());
-            barLevelDAO.update(signalLocation.getSignal().getBarLevel());
-            locationDAO.update(signalLocation.getLocation());
-            signalDAO.update(signalLocation.getSignal());
-            signalLocationDAO.update(signalLocation);
+            signalDAO.update(signal);
+            deviceInfoDAO.update(signal.getDeviceInfo());
+            cellInfoDAO.update(signal.getCellInfo());
+            providerDAO.update(signal.getProvider());
             tx.commit();
         }catch (RuntimeException ex){
             if(tx != null) {
@@ -96,14 +96,37 @@ public class EntityService implements Serializable {
         }
     }
 
-    public SignalLocation getSignalLocationById(int id){
-        return (SignalLocation)signalLocationDAO.getById(id);
+    public Signal getSignalById(int id){
+        return (Signal) signalDAO.getById(id);
     }
 
-    public List<SignalLocation> getAllSignalLocations(){
-        return (List<SignalLocation>)signalLocationDAO.getAll();
+    public Provider getProviderById(int id){
+        return (Provider) providerDAO.getById(id);
     }
 
+    public CellInfo getCellInfoById(int id){
+        return (CellInfo) cellInfoDAO.getById(id);
+    }
+
+    public DeviceInfo getDeviceInfoById(int id){
+        return (DeviceInfo) deviceInfoDAO.getById(id);
+    }
+
+    public List<Signal> getAllSignals(){
+        return (List<Signal>) signalDAO.getAll();
+    }
+
+    public List<Provider> getProvidersByNameQuery(String name){
+        return providerDAO.getProvidersByNameQuery(name);
+    }
+
+    public List<CellInfo> getCellInfosByNameQuery(String name){
+        return cellInfoDAO.getCellInfosByNameQuery(name);
+    }
+
+    public List<DeviceInfo> getDeviceInfosByNameQuery(String name){
+        return deviceInfoDAO.getDeviceInfosByNameQuery(name);
+    }
 
     public void closeConnection(){
         if(sessionFactory != null && currentSession != null) {

@@ -17,11 +17,9 @@
 
       <property name="show_sql">true</property>
 
-      <mapping class="persistence.entity.AsuLevel"/>
-      <mapping class="persistence.entity.BarLevel"/>
-      <mapping class="persistence.entity.DbmLevel"/>
-      <mapping class="persistence.entity.Location"/>
+      <mapping class="persistence.entity.CellInfo"/>
+      <mapping class="persistence.entity.DeviceInfo"/>
+      <mapping class="persistence.entity.Provider"/>
       <mapping class="persistence.entity.Signal"/>
-      <mapping class="persistence.entity.SignalLocation"/>
   </session-factory>
 </hibernate-configuration>

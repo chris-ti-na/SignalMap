@@ -2,62 +2,43 @@ package persistence.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by christina on 18.04.16.
  */
-
 @Entity
 public class Signal implements Serializable {
     @Id
     @GeneratedValue
     private int id;
-    @Enumerated (EnumType.STRING)
+    private double longitude;
+    private double latitude;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date timestamp;
+    private int asuLevel;
+    private int barLevel;
+    private int dbmLevel;
+
+    @ManyToOne
+    @JoinColumn(name = "cellInfo_id",
+            foreignKey = @ForeignKey(name = "CELLINFO_ID_FK")
+    )
     private CellInfo cellInfo;
+
     @ManyToOne
-    @JoinColumn(name = "asuLevel_id",
-            foreignKey = @ForeignKey(name = "ASU_LEVEL_ID_FK")
+    @JoinColumn(name = "provider_id",
+            foreignKey = @ForeignKey(name = "PROVIDER_ID_FK")
     )
-    private AsuLevel asuLevel;
-    @ManyToOne
-    @JoinColumn(name = "barLevel_id",
-            foreignKey = @ForeignKey(name = "BAR_LEVEL_ID_FK")
-    )
-    private BarLevel barLevel;
-    @ManyToOne
-    @JoinColumn(name = "dbmLevel_id",
-            foreignKey = @ForeignKey(name = "DBM_LEVEL_ID_FK")
-    )
-    private DbmLevel dbmLevel;
-    @Enumerated (EnumType.STRING)
     private Provider provider;
 
-    public static enum Provider {
-        MTS,
-        MEGAFON,
-        BEELINE,
-        TELE2,
-        YOTA,
-        ROSTELECOM
-    }
-
-    public static enum CellInfo {
-        GSM,
-        LTE,
-        CDMA,
-        WCDMA
-    }
+    @ManyToOne
+    @JoinColumn(name = "provider_id",
+            foreignKey = @ForeignKey(name = "PROVIDER_ID_FK")
+    )
+    private DeviceInfo deviceInfo;
 
     public Signal() {
-    }
-
-    public Signal(int id, CellInfo cellInfo, AsuLevel asuLevel, BarLevel barLevel, DbmLevel dbmLevel, Provider provider) {
-        this.id = id;
-        this.cellInfo = cellInfo;
-        this.asuLevel = asuLevel;
-        this.barLevel = barLevel;
-        this.dbmLevel = dbmLevel;
-        this.provider = provider;
     }
 
     public int getId() {
@@ -68,36 +49,68 @@ public class Signal implements Serializable {
         this.id = id;
     }
 
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public DeviceInfo getDeviceInfo() {
+        return deviceInfo;
+    }
+
+    public void setDeviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public int getAsuLevel() {
+        return asuLevel;
+    }
+
+    public void setAsuLevel(int asuLevel) {
+        this.asuLevel = asuLevel;
+    }
+
+    public int getBarLevel() {
+        return barLevel;
+    }
+
+    public void setBarLevel(int barLevel) {
+        this.barLevel = barLevel;
+    }
+
+    public int getDbmLevel() {
+        return dbmLevel;
+    }
+
+    public void setDbmLevel(int dbmLevel) {
+        this.dbmLevel = dbmLevel;
+    }
+
     public CellInfo getCellInfo() {
         return cellInfo;
     }
 
     public void setCellInfo(CellInfo cellInfo) {
         this.cellInfo = cellInfo;
-    }
-
-    public AsuLevel getAsuLevel() {
-        return asuLevel;
-    }
-
-    public void setAsuLevel(AsuLevel asuLevel) {
-        this.asuLevel = asuLevel;
-    }
-
-    public BarLevel getBarLevel() {
-        return barLevel;
-    }
-
-    public void setBarLevel(BarLevel barLevel) {
-        this.barLevel = barLevel;
-    }
-
-    public DbmLevel getDbmLevel() {
-        return dbmLevel;
-    }
-
-    public void setDbmLevel(DbmLevel dbmLevel) {
-        this.dbmLevel = dbmLevel;
     }
 
     public Provider getProvider() {

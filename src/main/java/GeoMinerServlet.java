@@ -1,3 +1,6 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import persistence.EntityService;
 import persistence.entity.*;
 
@@ -5,70 +8,88 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 
 public class GeoMinerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        EntityService entityService = new EntityService();
 
-        AsuLevel asuLevel = new AsuLevel();
-        asuLevel.setLevel(25);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
+        String line = null;
+        while((line = reader.readLine())!=null){
+            System.out.println(line);
 
-        BarLevel barLevel = new BarLevel();
-        barLevel.setLevel(2);
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = (JSONObject) parser.parse(line);
 
-        DbmLevel dbmLevel = new DbmLevel();
-        dbmLevel.setLevel(30);
+                EntityService entityService = new EntityService();
 
-        Location location = new Location();
-        location.setLongitude(100.500);
-        location.setLatitude(100.600);
+                Provider provider;
+                String providerName = (String) jsonObject.get("networkProvider");
+                List<Provider> providers = entityService.getProvidersByNameQuery(providerName);
+                if(!providers.isEmpty()){
+                    provider = providers.get(0);
+                } else {
+                    provider = new Provider();
+                    provider.setName(providerName);
+                }
 
-        Signal signal = new Signal();
-        signal.setAsuLevel(asuLevel);
-        signal.setBarLevel(barLevel);
-        signal.setDbmLevel(dbmLevel);
-        signal.setCellInfo(Signal.CellInfo.CDMA);
-        signal.setProvider(Signal.Provider.MEGAFON);
+                CellInfo cellInfo;
+                String cellInfoName = (String) jsonObject.get("cellInfo");
+                List<CellInfo> cellInfos = entityService.getCellInfosByNameQuery(cellInfoName);
+                if(!cellInfos.isEmpty()){
+                    cellInfo = cellInfos.get(0);
+                } else {
+                    cellInfo = new CellInfo();
+                    cellInfo.setName(cellInfoName);
+                }
 
-        SignalLocation signalLocation = new SignalLocation();
-        signalLocation.setLocation(location);
-        signalLocation.setSignal(signal);
-        signalLocation.setTimestamp(new Date());
+                DeviceInfo deviceInfo;
+                String deviceInfoName = (String) jsonObject.get("deviceInfo");
+                List<DeviceInfo> deviceInfos = entityService.getDeviceInfosByNameQuery(deviceInfoName);
+                if(!deviceInfos.isEmpty()){
+                    deviceInfo = deviceInfos.get(0);
+                } else {
+                    deviceInfo = new DeviceInfo();
+                    deviceInfo.setName(deviceInfoName);
+                }
 
-        entityService.addSignalLocation(signalLocation);
+                Signal signal = new Signal();
+                signal.setDeviceInfo(deviceInfo);
+                signal.setCellInfo(cellInfo);
+                signal.setProvider(provider);
+                signal.setAsuLevel(((Long) jsonObject.get("asuLevel")).intValue());
+                signal.setBarLevel(((Long) jsonObject.get("barLevel")).intValue());
+                signal.setDbmLevel(((Long) jsonObject.get("dbmLevel")).intValue());
+                signal.setTimestamp(new Date((Long) jsonObject.get("time")));
+                signal.setLatitude((Double) jsonObject.get("latitude"));
+                signal.setLongitude((Double) jsonObject.get("longitude"));
 
-        entityService.closeConnection();
+                entityService.addSignal(signal);
+                entityService.closeConnection();
 
+                System.out.println("__________________New data received________________");
+                System.out.println("latitude: " + signal.getLatitude());
+                System.out.println("longitude: " + signal.getLongitude());
+                System.out.println("time: " + signal.getTimestamp());
+                System.out.println("asuLevel: " + signal.getAsuLevel());
+                System.out.println("barLevel: " + signal.getBarLevel());
+                System.out.println("dbmLevel: " + signal.getDbmLevel());
+                System.out.println("cellInfo: " + signal.getCellInfo().getName());
+                System.out.println("networkProvider: " + signal.getProvider().getName());
+                System.out.println("deviceInfo: " + signal.getDeviceInfo().getName());
 
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(req.getInputStream()));
-//        String line = null;
-//        while((line = reader.readLine())!=null){
-//            System.out.println(line);
-
-//            JSONParser parser = new JSONParser();
-//            JSONObject jsonObject = null;
-//            try {
-//                jsonObject = (JSONObject) parser.parse(line);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//
-//            persistence.entity.persistence.entity.Frame frame = new persistence.entity.persistence.entity.Frame((Double) jsonObject.get("latitude"), (Double) jsonObject.get("longitude"),
-//                    (Long) jsonObject.get("time"), ((Long)jsonObject.get("signalStrength")).intValue(),
-//                    (String) jsonObject.get("cellInfo"), (String) jsonObject.get("networkProvider"));
-//
-//            System.out.println("__________________New data received________________");
-//            System.out.println("latitude: " + frame._latitude);
-//            System.out.println("longitude: " + frame._longitude);
-//            System.out.println("time: " + new Date(frame._time));
-//            System.out.println("signalStrength: " + frame._signalStrength);
-//            System.out.println("cellInfo: " + frame._cellInfo);
-//            System.out.println("networkProvider: " + frame._networkProvider);
-//        }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
