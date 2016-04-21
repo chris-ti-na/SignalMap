@@ -11,6 +11,7 @@ import persistence.entity.*;
 
 import javax.enterprise.context.Dependent;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,7 +19,7 @@ import java.util.Locale;
 public class EntityService implements Serializable {
 
     private SessionFactory sessionFactory;
-    private EntityDAO signalDAO;
+    private SignalDAOImpl signalDAO;
     private DeviceInfoDAOImpl deviceInfoDAO;
     private CellInfoDAOImpl cellInfoDAO;
     private ProviderDAOImpl providerDAO;
@@ -29,7 +30,7 @@ public class EntityService implements Serializable {
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml").build();
         sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();
         currentSession = sessionFactory.openSession();
-        signalDAO = getEntityDAO(Signal.class, currentSession);
+        signalDAO = (SignalDAOImpl)getEntityDAO(Signal.class, currentSession);
         deviceInfoDAO = (DeviceInfoDAOImpl)getEntityDAO(DeviceInfo.class, currentSession);
         cellInfoDAO = (CellInfoDAOImpl)getEntityDAO(CellInfo.class, currentSession);
         providerDAO = (ProviderDAOImpl)getEntityDAO(Provider.class, currentSession);
@@ -114,6 +115,14 @@ public class EntityService implements Serializable {
 
     public List<Signal> getAllSignals(){
         return (List<Signal>) signalDAO.getAll();
+    }
+
+    public List<Signal> getAllAvdSignals(){
+        return (List<Signal>) signalDAO.getAllAvdSignalsQuery();
+    }
+
+    public List<Signal> getAvdSignalsByDate(Date startDate, Date endDate){
+        return (List<Signal>) signalDAO.getAvdSignalsByDateQuery(startDate, endDate);
     }
 
     public List<Provider> getProvidersByNameQuery(String name){

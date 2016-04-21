@@ -1652,6 +1652,18 @@
       <column name="viewowner" sqlType="name" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="definition" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
     </table>
+    <table name="cellinfo" schema="public" catalog="signalmap" type="TABLE">
+      <column name="id" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="name" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="cellinfo_pkey" columns="id"/>
+      <exported-key name="cellinfo_id_fk" table="signal" schema="public" catalog="signalmap" columns="cellinfo_id"/>
+    </table>
+    <table name="deviceinfo" schema="public" catalog="signalmap" type="TABLE">
+      <column name="id" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="name" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="deviceinfo_pkey" columns="id"/>
+      <exported-key name="deviceinfo_id_fk" table="signal" schema="public" catalog="signalmap" columns="device_info"/>
+    </table>
     <table name="hibernate_sequence" schema="public" catalog="signalmap" type="SEQUENCE">
       <column name="sequence_name" sqlType="name" precision="2147483647" scale="0" nullable="false" jdbcType="12"/>
       <column name="last_value" sqlType="int8" precision="19" scale="0" nullable="false" jdbcType="-5"/>
@@ -1663,6 +1675,28 @@
       <column name="log_cnt" sqlType="int8" precision="19" scale="0" nullable="false" jdbcType="-5"/>
       <column name="is_cycled" sqlType="bool" precision="1" scale="0" nullable="false" jdbcType="-7"/>
       <column name="is_called" sqlType="bool" precision="1" scale="0" nullable="false" jdbcType="-7"/>
+    </table>
+    <table name="provider" schema="public" catalog="signalmap" type="TABLE">
+      <column name="id" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="name" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <primary-key name="provider_pkey" columns="id"/>
+      <exported-key name="provider_id_fk" table="signal" schema="public" catalog="signalmap" columns="provider_id"/>
+    </table>
+    <table name="signal" schema="public" catalog="signalmap" type="TABLE">
+      <column name="id" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="asulevel" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="barlevel" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="dbmlevel" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="latitude" sqlType="float8" precision="17" scale="17" nullable="false" jdbcType="8"/>
+      <column name="longitude" sqlType="float8" precision="17" scale="17" nullable="false" jdbcType="8"/>
+      <column name="timestamp" sqlType="timestamp" precision="29" scale="6" nullable="true" jdbcType="93"/>
+      <column name="cellinfo_id" sqlType="int4" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="device_info" sqlType="int4" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="provider_id" sqlType="int4" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <primary-key name="signal_pkey" columns="id"/>
+      <foreign-key name="cellinfo_id_fk" columns="cellinfo_id" ref-table="cellinfo" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="deviceinfo_id_fk" columns="device_info" ref-table="deviceinfo" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="provider_id_fk" columns="provider_id" ref-table="provider" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <procedure name="RI_FKey_cascade_del" schema="pg_catalog" catalog="signalmap" type="2" remarks="cmVmZXJlbnRpYWwgaW50ZWdyaXR5IE9OIERFTEVURSBDQVNDQURF">
       <prototype>

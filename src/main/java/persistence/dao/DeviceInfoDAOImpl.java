@@ -19,7 +19,7 @@ public class DeviceInfoDAOImpl extends GenericDAOImpl<DeviceInfo>  {
 
     public List<DeviceInfo> getDeviceInfosByNameQuery(String name) {
         return session.createCriteria(DeviceInfo.class)
-                .add(Restrictions.like("deviceinfo.name", name + "%"))
+                .add(Restrictions.like("name", name + "%"))
                 .list();
     }
 }

@@ -19,7 +19,7 @@ public class ProviderDAOImpl extends GenericDAOImpl<Provider> {
 
     public List<Provider> getProvidersByNameQuery(String name) {
         return session.createCriteria(Provider.class)
-                .add(Restrictions.like("provider.name", name + "%"))
+                .add(Restrictions.like("name", name + "%"))
                 .list();
     }
 }

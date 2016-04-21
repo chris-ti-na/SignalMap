@@ -33,8 +33,8 @@ public class Signal implements Serializable {
     private Provider provider;
 
     @ManyToOne
-    @JoinColumn(name = "provider_id",
-            foreignKey = @ForeignKey(name = "PROVIDER_ID_FK")
+    @JoinColumn(name = "device_info",
+            foreignKey = @ForeignKey(name = "DEVICEINFO_ID_FK")
     )
     private DeviceInfo deviceInfo;
 

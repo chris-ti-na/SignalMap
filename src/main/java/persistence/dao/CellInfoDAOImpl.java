@@ -19,7 +19,7 @@ public class CellInfoDAOImpl extends GenericDAOImpl<CellInfo>  {
 
     public List<CellInfo> getCellInfosByNameQuery(String name) {
         return session.createCriteria(CellInfo.class)
-                .add(Restrictions.like("cellinfo.name", name + "%"))
+                .add(Restrictions.like("name", name + "%"))
                 .list();
     }
 }
