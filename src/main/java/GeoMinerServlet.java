@@ -49,6 +49,9 @@ public class GeoMinerServlet extends HttpServlet {
         } else {
             deviceInfo = new DeviceInfo();
             deviceInfo.setName(deviceInfoName);
+            deviceInfo.setOsVersion("tst os");
+            deviceInfo.setGpsSensor("tst gps");
+            deviceInfo.setRadioVersion("tst radio");
         }
 
         Signal signal = new Signal();
@@ -61,9 +64,7 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(100.500);
         signal.setLongitude(100.500);
-
         entityService.addSignal(signal);
-
 
         signal = new Signal();
         signal.setDeviceInfo(deviceInfo);
@@ -75,7 +76,6 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(100.500);
         signal.setLongitude(100.500);
-
         entityService.addSignal(signal);
 
         signal = new Signal();
@@ -88,7 +88,6 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(100.500);
         signal.setLongitude(100.500);
-
         entityService.addSignal(signal);
 
         signal = new Signal();
@@ -101,9 +100,7 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(200.500);
         signal.setLongitude(200.500);
-
         entityService.addSignal(signal);
-
 
         signal = new Signal();
         signal.setDeviceInfo(deviceInfo);
@@ -115,7 +112,6 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(200.500);
         signal.setLongitude(200.500);
-
         entityService.addSignal(signal);
 
         signal = new Signal();
@@ -128,7 +124,6 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(300.500);
         signal.setLongitude(300.500);
-
         entityService.addSignal(signal);
 
         signal = new Signal();
@@ -141,7 +136,6 @@ public class GeoMinerServlet extends HttpServlet {
         signal.setTimestamp(new Date());
         signal.setLatitude(300.500);
         signal.setLongitude(300.500);
-
         entityService.addSignal(signal);
 
         entityService.closeConnection();

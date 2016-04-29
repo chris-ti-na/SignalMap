@@ -13,6 +13,9 @@ public class DeviceInfo {
     @GeneratedValue
     private int id;
     private String name;
+    private String osVersion;
+    private String gpsSensor;
+    private String radioVersion;
 
     public DeviceInfo() {
     }
@@ -31,5 +34,29 @@ public class DeviceInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getOsVersion() {
+        return osVersion;
+    }
+
+    public void setOsVersion(String osVersion) {
+        this.osVersion = osVersion;
+    }
+
+    public String getGpsSensor() {
+        return gpsSensor;
+    }
+
+    public void setGpsSensor(String gpsSensor) {
+        this.gpsSensor = gpsSensor;
+    }
+
+    public String getRadioVersion() {
+        return radioVersion;
+    }
+
+    public void setRadioVersion(String radioVersion) {
+        this.radioVersion = radioVersion;
     }
 }
