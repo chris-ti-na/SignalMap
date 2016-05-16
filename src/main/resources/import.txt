@@ -1,0 +1,13 @@
+{
+  "import": {
+    "targetWorkspace": {
+      "workspace": {
+        "name": "signalmap"
+      }
+    },
+    "data": {
+      "type": "directory",
+      "location": "/usr/local/opt/wildfly-as/libexec/standalone/tmp/shapefiles"
+    }
+  }
+}

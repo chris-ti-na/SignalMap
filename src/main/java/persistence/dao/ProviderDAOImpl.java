@@ -17,7 +17,7 @@ public class ProviderDAOImpl extends GenericDAOImpl<Provider> {
         this.session = session;
     }
 
-    public List<Provider> getProvidersByNameQuery(String name) {
+    public List getProvidersByNameQuery(String name) {
         return session.createCriteria(Provider.class)
                 .add(Restrictions.like("name", name + "%"))
                 .list();

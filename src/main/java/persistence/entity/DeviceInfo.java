@@ -12,9 +12,9 @@ public class DeviceInfo {
     @Id
     @GeneratedValue
     private int id;
-    private String name;
+    private String model;
+    private String producer;
     private String osVersion;
-    private String gpsSensor;
     private String radioVersion;
 
     public DeviceInfo() {
@@ -28,12 +28,20 @@ public class DeviceInfo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getModel() {
+        return model;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public String getProducer() {
+        return producer;
+    }
+
+    public void setProducer(String producer) {
+        this.producer = producer;
     }
 
     public String getOsVersion() {
@@ -42,14 +50,6 @@ public class DeviceInfo {
 
     public void setOsVersion(String osVersion) {
         this.osVersion = osVersion;
-    }
-
-    public String getGpsSensor() {
-        return gpsSensor;
-    }
-
-    public void setGpsSensor(String gpsSensor) {
-        this.gpsSensor = gpsSensor;
     }
 
     public String getRadioVersion() {

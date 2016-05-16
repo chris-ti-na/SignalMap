@@ -14,7 +14,7 @@ public class GenericDAOImpl<Entity> implements EntityDAO<Entity> {
         this.session = session;
     }
 
-    public List<Entity> getAll() {
+    public List getAll() {
         return session.createCriteria(this.entityClass).list();
     }
 

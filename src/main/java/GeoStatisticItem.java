@@ -1,12 +1,12 @@
 public class GeoStatisticItem {
     private double latitude;
     private double longitude;
-    private int number;
+    private double number;
 
     public GeoStatisticItem() {
     }
 
-    public GeoStatisticItem(double latitude, double longitude, int number) {
+    public GeoStatisticItem(double latitude, double longitude, double number) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.number = number;
@@ -28,11 +28,11 @@ public class GeoStatisticItem {
         this.longitude = longitude;
     }
 
-    public int getNumber() {
+    public double getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(double number) {
         this.number = number;
     }
 }

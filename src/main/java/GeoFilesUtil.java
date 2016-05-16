@@ -1,6 +1,11 @@
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import it.geosolutions.geoserver.rest.GeoServerRESTManager;
+import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
+import it.geosolutions.geoserver.rest.GeoServerRESTReader;
+import it.geosolutions.geoserver.rest.encoder.datastore.GSShapefileDatastoreEncoder;
+import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.Transaction;
 import org.geotools.data.collection.ListFeatureCollection;
@@ -13,79 +18,141 @@ import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.jboss.logging.Logger;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class GeoFilesUtil {
+    private static final Logger log= Logger.getLogger(GeoFilesUtil.class.getName());
 
-    public static void generateShapefile(List<GeoStatisticItem> items, int token){
-        SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
-        builder.setName("Location");
-        builder.setCRS(DefaultGeographicCRS.WGS84);
-        builder.add("the_geom", Point.class);
-        builder.add("number", Integer.class);
+    public static void writeData2Shapefiles(Map<String, Map<String, List<Object[]>>> data){
+        for (String cellInfo : data.keySet()){
+            for (String provider : data.get(cellInfo).keySet()){
+                Map<String, List<GeoStatisticItem>> providerStatisticMap = StatisticUtil.getAllStatistics(data.get(cellInfo).get(provider));
+                File dir = getDirectory(getDirectoryPath() + File.separator + cellInfo + File.separator + provider);
+                GeoFilesUtil.generateShapefile(providerStatisticMap, dir);
+            }
+        }
+    }
 
-        final SimpleFeatureType TYPE = builder.buildFeatureType();
+    private static String getDirectoryPath(){
+        return System.getProperty("jboss.server.temp.dir") + File.separator + "shapefiles";
+    }
 
-        List<SimpleFeature> features = new ArrayList<SimpleFeature>();
-        GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
-        SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(TYPE);
+    private static File getDirectory(String path){
+        File dir = new File(path);
+        dir.mkdirs();
+        return dir;
+    }
 
-        for (GeoStatisticItem item : items) {
-            Point point = geometryFactory.createPoint(new Coordinate(item.getLongitude(), item.getLatitude()));
+    private static File getDirectory(){
+        File dir = new File(getDirectoryPath());
+        dir.mkdirs();
+        return dir;
+    }
 
-            featureBuilder.add(point);
-            featureBuilder.add(item.getNumber());
-            SimpleFeature feature = featureBuilder.buildFeature(null);
-            features.add(feature);
+    private static void generateShapefile(Map<String, List<GeoStatisticItem>> allStatisticMap, File directory){
+        for(String key : allStatisticMap.keySet()) {
+            SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+            builder.setName("Location");
+            builder.setSRS("EPSG:4326");
+            builder.add("the_geom", Point.class);
+            builder.add("number", Integer.class);
+
+            final SimpleFeatureType TYPE = builder.buildFeatureType();
+
+            List<SimpleFeature> features = new ArrayList<SimpleFeature>();
+            GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
+            SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(TYPE);
+
+            for (GeoStatisticItem item : allStatisticMap.get(key)) {
+                Point point = geometryFactory.createPoint(new Coordinate(item.getLongitude(), item.getLatitude()));
+
+                featureBuilder.add(point);
+                featureBuilder.add(item.getNumber());
+                SimpleFeature feature = featureBuilder.buildFeature(null);
+                features.add(feature);
+            }
+
+            String fileName = key + ".shp";
+            File shapeFile = new File(directory + File.separator + fileName);
+
+            ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
+
+            try {
+                Map<String, Serializable> params = new HashMap<String, Serializable>();
+                params.put("url", shapeFile.toURI().toURL());
+                params.put("create spatial index", Boolean.TRUE);
+
+                ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
+                newDataStore.createSchema(TYPE);
+
+                Transaction transaction = new DefaultTransaction("create");
+
+                String typeName = newDataStore.getTypeNames()[0];
+                SimpleFeatureSource featureSource = newDataStore.getFeatureSource(typeName);
+
+                if (featureSource instanceof SimpleFeatureStore) {
+                    SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
+                    SimpleFeatureCollection collection = new ListFeatureCollection(TYPE, features);
+                    featureStore.setTransaction(transaction);
+                    try {
+                        featureStore.addFeatures(collection);
+                        transaction.commit();
+                    } catch (Exception problem) {
+                        problem.printStackTrace();
+                        transaction.rollback();
+                    } finally {
+                        transaction.close();
+                    }
+                } else {
+                    System.out.println(typeName + " does not support read/write access");
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void addToZipFile(String fileName, ZipOutputStream zos) throws IOException {
+        File file = new File(fileName);
+        FileInputStream fis = new FileInputStream(file);
+        ZipEntry zipEntry = new ZipEntry(fileName);
+        zos.putNextEntry(zipEntry);
+
+        byte[] bytes = new byte[1024];
+        int length;
+        while ((length = fis.read(bytes)) >= 0) {
+            zos.write(bytes, 0, length);
         }
 
-        String tempFolderPath = System.getProperty("jboss.server.temp.dir");
-        String fileName = "sm" + token + ".shp";
-        File shapeFile = new File(tempFolderPath + File.pathSeparator + fileName);
+        zos.closeEntry();
+        fis.close();
+    }
 
-        ShapefileDataStoreFactory dataStoreFactory = new ShapefileDataStoreFactory();
+    private static void zipShapefiles(Set<String> keys) throws IOException {
+        for(String key : keys) {
+            FileOutputStream fos = new FileOutputStream(getDirectoryPath() + File.separator + key + ".zip");
+            ZipOutputStream zos = new ZipOutputStream(fos);
 
-        try {
-            Map<String, Serializable> params = new HashMap<String, Serializable>();
-            params.put("url", shapeFile.toURI().toURL());
-            params.put("create spatial index", Boolean.TRUE);
+            addToZipFile(getDirectoryPath() + File.separator + key + ".shp", zos);
+            addToZipFile(getDirectoryPath() + File.separator + key + ".shx", zos);
+            addToZipFile(getDirectoryPath() + File.separator + key + ".prj", zos);
+            addToZipFile(getDirectoryPath() + File.separator + key + ".dbf", zos);
 
-            ShapefileDataStore newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
-            newDataStore.createSchema(TYPE);
-
-            Transaction transaction = new DefaultTransaction("create");
-
-            String typeName = newDataStore.getTypeNames()[0];
-            SimpleFeatureSource featureSource = newDataStore.getFeatureSource(typeName);
-
-            if (featureSource instanceof SimpleFeatureStore) {
-                SimpleFeatureStore featureStore = (SimpleFeatureStore) featureSource;
-                SimpleFeatureCollection collection = new ListFeatureCollection(TYPE, features);
-                featureStore.setTransaction(transaction);
-                try {
-                    featureStore.addFeatures(collection);
-                    transaction.commit();
-                } catch (Exception problem) {
-                    problem.printStackTrace();
-                    transaction.rollback();
-                } finally {
-                    transaction.close();
-                }
-            } else {
-                System.out.println(typeName + " does not support read/write access");
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            zos.close();
+            fos.close();
         }
     }
 }

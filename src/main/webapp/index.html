@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="app/js/controller.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+<body onload="initWebSocket()">
+
+<div id="wrapper">
+
+    <div id="content">
+        <div id="header">
+            <div class="left" id="logo">
+                <h1>SignalMap</h1>
+            </div>
+            <div class="right" id="info">
+                Скачать приложение Информация о системе Информация о разработчике
+            </div>
+        </div>
+        <div id="main">
+            <div class="left" id="param">
+                <label>Стандарт связи</label>
+                <div>
+                    <button onclick="inquireMap('lte')" type="button" class="btn btn-primary">LTE</button>
+                    <br/>
+                    <button onclick="inquireMap('cdma')" type="button" class="btn btn-primary">CDMA</button>
+                    <br/>
+                    <button onclick="inquireMap('gsm')" type="button" class="btn btn-primary">GSM</button>
+                    <br/>
+                    <button onclick="inquireMap('wcdma')" type="button" class="btn btn-primary">WCDMA</button>
+                </div>
+            </div>
+
+            <div class="right" id="data">
+                <div id="map"></div>
+            </div>
+
+        </div>
+        <div id="footer">
+            <p>Кристина Грачёва, 2016</p>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -17,7 +17,7 @@ public class CellInfoDAOImpl extends GenericDAOImpl<CellInfo>  {
         this.session = session;
     }
 
-    public List<CellInfo> getCellInfosByNameQuery(String name) {
+    public List getCellInfosByNameQuery(String name) {
         return session.createCriteria(CellInfo.class)
                 .add(Restrictions.like("name", name + "%"))
                 .list();

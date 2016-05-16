@@ -1660,7 +1660,10 @@
     </table>
     <table name="deviceinfo" schema="public" catalog="signalmap" type="TABLE">
       <column name="id" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="gpssensor" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
       <column name="name" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="osversion" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
+      <column name="radioversion" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="deviceinfo_pkey" columns="id"/>
       <exported-key name="deviceinfo_id_fk" table="signal" schema="public" catalog="signalmap" columns="device_info"/>
     </table>
