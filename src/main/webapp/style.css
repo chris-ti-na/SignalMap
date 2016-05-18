@@ -1,7 +1,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 80%;
-    background-color: rgba(200, 213, 24, 0.35);
+    background-color: rgba(184, 119, 213, 0.35);
 }
 
 #wrapper {
@@ -18,9 +18,14 @@ body {
 }
 
 #logo {
+    float:left;
+    padding-bottom: 10px;
+    padding-left:10px;
 }
 
 #info {
+    float:right;
+    padding-right:10px;
 }
 
 #main {
@@ -32,20 +37,29 @@ body {
 }
 
 #cellinfo {
-
+    background-color: #224737;
+    border: none;
+    color: white;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }
 
 #data {
+    padding-left:10px;
 }
 
 .left{
     float:left;
-    padding-left:10px;
+    width: 25%;
 }
 
 .right{
     float:right;
-    padding-right:10px;
+    width: 75%;
 }
 
 #footer {
@@ -57,5 +71,24 @@ body {
 
 #map {
     height: 470px;
-    width: 680px;
+    width: 95%;
+    align-content: center;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    width: 100%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background: #3cb0fd;
 }

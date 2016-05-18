@@ -1,11 +1,6 @@
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import it.geosolutions.geoserver.rest.GeoServerRESTManager;
-import it.geosolutions.geoserver.rest.GeoServerRESTPublisher;
-import it.geosolutions.geoserver.rest.GeoServerRESTReader;
-import it.geosolutions.geoserver.rest.encoder.datastore.GSShapefileDatastoreEncoder;
-import it.geosolutions.geoserver.rest.manager.GeoServerRESTStoreManager;
 import org.geotools.data.DefaultTransaction;
 import org.geotools.data.Transaction;
 import org.geotools.data.collection.ListFeatureCollection;
@@ -17,22 +12,16 @@ import org.geotools.data.simple.SimpleFeatureStore;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.geotools.referencing.crs.DefaultGeographicCRS;
-import org.jboss.logging.Logger;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class GeoFilesUtil {
-    private static final Logger log= Logger.getLogger(GeoFilesUtil.class.getName());
 
     public static void writeData2Shapefiles(Map<String, Map<String, List<Object[]>>> data){
         for (String cellInfo : data.keySet()){
@@ -45,7 +34,7 @@ public class GeoFilesUtil {
     }
 
     private static String getDirectoryPath(){
-        return System.getProperty("jboss.server.temp.dir") + File.separator + "shapefiles";
+        return System.getProperty("glassfish.embedded.tmpdir") + File.separator + "shapefiles";
     }
 
     private static File getDirectory(String path){

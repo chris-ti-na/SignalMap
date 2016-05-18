@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="geoserver-manager-1.6-SNAPSHOT">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/Downloads/geoserver-manager-1.6-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

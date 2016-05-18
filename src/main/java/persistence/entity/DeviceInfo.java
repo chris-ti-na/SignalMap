@@ -14,7 +14,7 @@ public class DeviceInfo {
     private int id;
     private String model;
     private String producer;
-    private String osVersion;
+    private int osVersion;
     private String radioVersion;
 
     public DeviceInfo() {
@@ -44,11 +44,11 @@ public class DeviceInfo {
         this.producer = producer;
     }
 
-    public String getOsVersion() {
+    public int getOsVersion() {
         return osVersion;
     }
 
-    public void setOsVersion(String osVersion) {
+    public void setOsVersion(int osVersion) {
         this.osVersion = osVersion;
     }
 

@@ -58,26 +58,13 @@ function showMap(providers, cellinfo){
         }).addTo(map);
 
 
-
     var layers = [];
     layers.push('signalmap:' + cellinfo + '-all-bar');
     for (var i in providers) {
         layers.push('signalmap:' + cellinfo +'-' + providers[i] + '-bar');
     }
 
-    console.log("layers: " + layers);
-
     var wmsLayer = L.tileLayer.wms('http://localhost:8080/geoserver/signalmap/wms?', {
         layers: layers, transparent:"true"
-    }, {isBaseLayer:false}).addTo(map);
-
-    var quakePoints = [
-        [53.2000600, 50.1500000]
-    ];
-
-    var heat = L.heatLayer(quakePoints,{
-        radius: 20,
-        blur: 15,
-        maxZoom: 17
     }).addTo(map);
 }

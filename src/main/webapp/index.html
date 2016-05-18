@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body onload="initWebSocket()">
 
@@ -15,24 +18,53 @@
 
     <div id="content">
         <div id="header">
-            <div class="left" id="logo">
+            <div id="logo">
                 <h1>SignalMap</h1>
             </div>
-            <div class="right" id="info">
-                Скачать приложение Информация о системе Информация о разработчике
+            <div id="info">
+                <button type="button" class="btn btn-link btn-md" data-toggle="modal" data-target="#sInfoModal">Информация о системе</button>
+                <!-- Modal -->
+                <div class="modal fade" id="sInfoModal" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Информация о системе</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>This is a large modal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-link btn-md" data-toggle="modal" data-target="#dInfoModal">Информация о разработчике</button>
+                <!-- Modal -->
+                <div class="modal fade" id="dInfoModal" role="dialog">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Информация о разработчике</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>This is a large modal.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="main">
             <div class="left" id="param">
-                <label>Стандарт связи</label>
                 <div>
-                    <button onclick="inquireMap('lte')" type="button" class="btn btn-primary">LTE</button>
-                    <br/>
-                    <button onclick="inquireMap('cdma')" type="button" class="btn btn-primary">CDMA</button>
-                    <br/>
-                    <button onclick="inquireMap('gsm')" type="button" class="btn btn-primary">GSM</button>
-                    <br/>
-                    <button onclick="inquireMap('wcdma')" type="button" class="btn btn-primary">WCDMA</button>
+
+                    <div class="list-group">
+                        <a href="#" class="list-group-item active">Выберите стандарт связи</a>
+                        <a href="#" onclick="inquireMap('lte')" class="list-group-item">LTE</a>
+                        <a href="#" onclick="inquireMap('cdma')" class="list-group-item">CDMA</a>
+                        <a href="#" onclick="inquireMap('gsm')" class="list-group-item">GSM</a>
+                        <a href="#" onclick="inquireMap('wcdma')" class="list-group-item">WCDMA</a>
+                    </div>
                 </div>
             </div>
 
